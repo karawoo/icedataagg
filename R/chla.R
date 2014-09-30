@@ -8,6 +8,8 @@ source("R/dates.R")
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 chla$date <- as.Date(chla$date)
 
+# merge chlorophyll data with winterdates - note there's no iceon/iceoff data
+# for 2007
 chla_dates <- merge(chla, winterdates, by.x = "Year", by.y = "iceoff_year",
                     all.x = TRUE, all.y = FALSE)
 
