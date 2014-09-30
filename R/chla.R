@@ -1,8 +1,8 @@
 library('lubridate')
 
-source("datadir.R")
-source("depths.R")
-source("dates.R")
+source("R/datadir.R")
+source("R/depths.R")
+source("R/dates.R")
 
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 
