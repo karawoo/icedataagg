@@ -1,3 +1,6 @@
+* 2014-09-30
+- what to do about samples where we're missing photic zone info?
+
 * 2014-09-29
 
 ** How to aggregate data into ice-covered vs. stratified:
