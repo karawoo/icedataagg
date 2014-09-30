@@ -5,6 +5,7 @@ library('dplyr')
 source("R/datadir.R")
 
 secchi <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/secchi_cleaned.csv"), stringsAsFactors = FALSE)
+secchi$date <- as.Date(secchi$date)
 
 pz <- function(secchi) {
     if (!is.numeric(secchi)) stop("secchi must be numeric")
