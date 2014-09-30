@@ -13,8 +13,29 @@ chla$date <- as.Date(chla$date)
 chla_dates <- merge(chla, winterdates, by.x = "Year", by.y = "iceoff_year",
                     all.x = TRUE, all.y = FALSE)
 
-chla_dates <- chla_dates %>%
-  filter(iceon <= as.Date(date) & as.Date(date) <= iceoff 
-         | month(date) %in% c(7, 8, 9)) %>%
+# merge with secchi/photic info
+chla_secchi <- merge(chla_dates, 
+                     secchi_photic[, c("date", "secchi_depth", "photic_zone")], 
+                     by = "date", all.x = TRUE, all.y = FALSE)
+
+# aggregate: remove rows with NAs; remove iceon_year column; choose data 
+# during ice-covered period or during july, august, september; choose data
+# from depths within the photic zone; add season column; for each season
+# summarize start date, end date, min depth, max depth, mean chla, mean secchi,
+# and mean photic zone depth
+
+chla_agg <- chla_secchi %>%
+  do(na.omit(.)) %>%
+  select(-iceon_year) %>%
+  filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9)) %>%
+  filter(depth < photic_zone) %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
-  arrange(date, depth)
+  group_by(Year, season) %>%
+  summarize(start = min(date), 
+            end = max(date), 
+            mindepth = min(depth), 
+            maxdepth = max(depth), 
+            meanchla = mean(chla), 
+            meansecchi = mean(secchi_depth), 
+            meanphotic = mean(photic_zone))
+
