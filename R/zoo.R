@@ -5,7 +5,6 @@ library('reshape2')
 source("R/datadir.R")
 source("R/depths.R")
 source("R/dates.R")
-names(winterdates)[names(winterdates) == "iceoff_year"] <- "year"
 
 zoo <- read.csv(paste0(datadir, "Longterm_data/zoo/data/zoopzeroskey_alldepths.csv"), 
                 stringsAsFactors = FALSE)
@@ -74,3 +73,4 @@ zoo_sml <- zoo %>%
   summarize(count_total = sum(count_liter) )%>% 
   dcast(., year.x + season ~ group_new, fun.aggregate = sum, 
         value.var = "count_total")
+  merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
