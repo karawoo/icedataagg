@@ -21,17 +21,12 @@ rename_grp <- function(group_fine) {
   group_fine %>%
     gsub("Calanoid Copepod", "calanoid", .) %>%
     gsub("Cyclopoid Copepod", "cyclopoid", .) %>%
-    gsub("Harpacticoid", "othercop", .) %>%
     gsub("Daphnia", "daphnia", .) %>%
     gsub("Ceriodaphnia", "daphnia", .) %>%
     gsub("Cladoceran", "cladoceran", .) %>%
     gsub("Bosmina", "cladoceran", .) %>%
     gsub("Loricate rotifer", "rotifer", .) %>%
     gsub("Illoricate rotifer", "rotifer", .) %>%
-    gsub("Bdelloid", "rotifer", .) %>%
-    gsub("Cyst", "other", .) %>%
-    gsub("Various protist", "other", .) %>%
-    gsub("Ciliate", "other", .)
 }
 
 # function to convert units of zooplankton to individuals/liter
@@ -44,6 +39,8 @@ m2_to_l <- function(x, interval) {
 }
 
 # select only alive and non-double-count data; 
+# remove taxa that are counted too inconsistently to use (harpacticoid, 
+# bdelloid, ciliate, cyst, various protist);
 # rename groups based on the categories that we ultimately want in the data; 
 # create "year" column;
 # merge with dates and depth data (this only keeps rows that are present in the
@@ -61,6 +58,8 @@ zoo_sml <- zoo %>%
   select(-genus, -species, -endemic_cosmo, -lifestage_gen, 
          -lifestage_num, -lifestage_cop, -gender) %>%
   filter(status != "dead" & !kod %in% dblcounts) %>%
+  filter(!group_fine %in% c("Ciliate", "Harpacticoid", "Bdelloid",
+                            "Various protist", "Cyst")) %>%
   mutate(group_new = rename_grp(group_fine)) %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
