@@ -1,3 +1,12 @@
+Ice Data Aggregation Notes -*- mode: org -*-
+
+* 2014-10-02
+- stations with multiple n -- we ask for the number of samples that's being aggregated, but what if they sampled some things x times and other things y times (e.g. secchi 10x but zooplankton only 5, or something)?
+- if there are samples for which there is no secchi/photic zone info -- discard these? or try to interpolate secchi?
+
+* 2014-10-01
+- need to add an "other copepod" category to the zooplankton data (so there will be calanoid, cyclopoid, and other)
+
 * 2014-09-30
 - what to do about samples where we're missing photic zone info?
 
