@@ -2,8 +2,7 @@ library('lubridate')
 library('dplyr')
 
 source("R/datadir.R")
-source("R/depths.R")
-source("R/dates.R")
+source("R/datesdepths.R")
 
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 chla$date <- as.Date(chla$date)
