@@ -24,7 +24,7 @@ rename_grp <- function(group_fine) {
     gsub("Cladoceran", "cladoceran", .) %>%
     gsub("Bosmina", "cladoceran", .) %>%
     gsub("Loricate rotifer", "rotifer", .) %>%
-    gsub("Illoricate rotifer", "rotifer", .) %>%
+    gsub("Illoricate rotifer", "rotifer", .)
 }
 
 # function to convert units of zooplankton to individuals/liter
