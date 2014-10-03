@@ -2,7 +2,13 @@ Ice Data Aggregation Notes -*- mode: org -*-
 
 * 2014-10-02
 - stations with multiple n -- we ask for the number of samples that's being aggregated, but what if they sampled some things x times and other things y times (e.g. secchi 10x but zooplankton only 5, or something)?
-- if there are samples for which there is no secchi/photic zone info -- discard these? or try to interpolate secchi?
+- if there are samples for which there is no secchi/photic zone info -- discard these? or try to interpolate secchi? - interpolate using average photic zone for that season
+- don't include ciliates (or harpacticoids, bdelloids, cysts, "various protists") in zooplankton data because they're counted too inconsistently
+- if there are different sample start and end dates for different parameters use the first start and last end for the "sample dates" field
+- there's only iceon/iceoff data through 2006 but chla data goes to 2008
+- no secchi data before 1964 or in 1984 - for these just use averages from the whole time series in winter or summer. there's been no trend in secchi so this should be fine
+- iceon/iceoff data only goes to 2006 but secchi and chlorophyll go to 2008. for these few years look at gaps in sampling in winter to determine iceon and iceoff for 2007 and 2008
+- need to figure out a better way to subset the data based on ice date ranges. currently I merge data and ice dates by year using iceoff year and then subset the data based on whether the date falls within the ice date range /in that row/, but this will lose any samples in a given year when the lake froze before the end of December.
 
 * 2014-10-01
 - need to add an "other copepod" category to the zooplankton data (so there will be calanoid, cyclopoid, and other)
