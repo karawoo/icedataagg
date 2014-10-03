@@ -61,15 +61,14 @@ zoo_sml <- zoo %>%
   mutate(group_new = rename_grp(group_fine)) %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
-  left_join(winterdates, by = "year") %>%
-  left_join(secchi_photic, by = "date") %>%
-  filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9)) %>%
-  filter(nig_gr <= photic_zone) %>%
-  mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr)) %>%
-  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
-  select(-year.y, -iceon_year, -count, -iceon, -iceoff, -secchi_depth) %>%
-  group_by(year.x, season, group_new) %>%
-  summarize(count_total = sum(count_liter) )%>% 
-  dcast(., year.x + season ~ group_new, fun.aggregate = sum, 
-        value.var = "count_total")
   merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
+  merge(secchi_photic, by = "date", all.x = TRUE, all.y = TRUE) %>%
+  filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9))
+#   filter(nig_gr <= photic_zone) %>%
+#   mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr)) %>%
+#   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
+#   select(-year.y, -iceon_year, -count, -iceon, -iceoff, -secchi_depth) %>%
+#   group_by(year.x, season, group_new) %>%
+#   summarize(count_total = sum(count_liter) )%>% 
+#   dcast(., year.x + season ~ group_new, fun.aggregate = sum, 
+#         value.var = "count_total")
