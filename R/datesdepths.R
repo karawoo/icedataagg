@@ -30,6 +30,21 @@ winter$iceoff <- as.Date(paste(winter$iceoff_year,
 winter <- winter[, c("iceon", "iceoff", "iceon_year",
                                "iceoff_year")]
 
+# add dates for 2007 and 2008
+# for ice on: use first sample after the annual gap in sampling that indicates
+# the period of ice formation. just find this by looking at the data. this will
+# be a conservative estimate of ice-on, but since Magnuson et al. found that 
+# ice-on is getting later, we don't want to use average ice-on date.
+# for ice off: use average ice-off date (ice-off isn't changing).
+
+avgiceoff <- mean(as.numeric(format(winter$iceoff, "%j")))
+extrayears <- data.frame(iceon = c("2007-02-25", "2008-02-11"), 
+                         iceoff = c(as.Date(avgiceoff, origin = "2007-01-01"), 
+                                    as.Date(avgiceoff, origin = "2008-01-01")), 
+                         iceon_year = c(2007, 2008),
+                         iceoff_year = c(2007, 2008))
+
+winterdates <- rbind(winter, extrayears)
 
 ###### Summer sample dates - use July, August, September
 
