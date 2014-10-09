@@ -65,6 +65,22 @@ pz <- function(secchi) {
 summer_secchi <- mean(secchi[secchi$month %in% c(7, 8, 9), "secchi_depth"], 
                       na.rm = TRUE)
 
+# winter secchi - gotta figure out a better way than this nested loop
+mult_subset <- function(x, y) {
+  keeps <- c()
+  for(j in seq_len(nrow(x))) {
+    for (i in seq_len(nrow(y))) {
+      if (x$date[j] >= y[i, "iceon"] 
+          & x$date[j] <= y[i, "iceoff"]) {
+        keeps <- c(keeps, j)
+      }
+    }
+  }
+  x[keeps, ]
+}
+
+winter_secchi <- mean(mult_subset(secchi, winterdates)$secchi_depth, na.rm = TRUE)
+
 # calculate photic zone for each dates  
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
