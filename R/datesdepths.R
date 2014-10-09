@@ -4,7 +4,7 @@ library('dplyr')
 
 source("R/datadir.R")
 
-winterdates <- read.csv("data/iceonoff.csv", stringsAsFactors = FALSE)
+winter <- read.csv("data/iceonoff.csv", stringsAsFactors = FALSE)
 secchi <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/secchi_cleaned.csv"), stringsAsFactors = FALSE)
 secchi$date <- as.Date(secchi$date)
 
@@ -16,18 +16,18 @@ secchi$date <- as.Date(secchi$date)
 # National Snow and Ice Data Center. http://dx.doi.org/10.7265/N5W66HP8.
 
 # paste dates together
-winterdates$iceon <- as.Date(paste(winterdates$iceon_year,
-                                   winterdates$iceon_month,
-                                   winterdates$iceon_day, sep = "-"),
-                             format = "%Y-%m-%d")
+winter$iceon <- as.Date(paste(winter$iceon_year, 
+                              winter$iceon_month, 
+                              winter$iceon_day, sep = "-"), 
+                        format = "%Y-%m-%d")
 
-winterdates$iceoff <- as.Date(paste(winterdates$iceoff_year,
-                                    winterdates$iceoff_month,
-                                    winterdates$iceoff_day, sep = "-"),
-                              format = "%Y-%m-%d")
+winter$iceoff <- as.Date(paste(winter$iceoff_year, 
+                               winter$iceoff_month,
+                               winter$iceoff_day, sep = "-"), 
+                         format = "%Y-%m-%d")
 
 # keep columns of interest
-winterdates <- winterdates[, c("iceon", "iceoff", "iceon_year",
+winter <- winter[, c("iceon", "iceoff", "iceon_year",
                                "iceoff_year")]
 
 
