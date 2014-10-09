@@ -84,6 +84,16 @@ winter_secchi <- mean(mult_subset(secchi, winterdates)$secchi_depth, na.rm = TRU
 # calculate photic zone for each dates  
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
-  
-  
+
+mult_subset_2 <- function(x, y) {
+  year <- as.numeric(format(x$date, format = "%Y"))
+  ysub <- y[y$iceon_year == year | y$iceoff_year == year, ]
+  for (i in seq_len(nrow(ysub))) {
+    if (x$date >= ysub[i, "iceon"] & x$date <= ysub[i, "iceoff"]) {
+      keeps <- c(keeps, x$id)
+    }
+  }
+}
+
+apply()
   
