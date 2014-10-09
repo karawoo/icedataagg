@@ -52,7 +52,7 @@ m2_to_l <- function(x, interval) {
 # figure out a way to get sums and percentages - try casting to wide first so
 # each group has its own column, then sum, then calculate percentages based
 # on that sum?
-zoo_sml <- zoo %>% 
+system.time(zoo_sml <- zoo %>% 
   select(-genus, -species, -endemic_cosmo, -lifestage_gen, 
          -lifestage_num, -lifestage_cop, -gender) %>%
   filter(status != "dead" & !kod %in% dblcounts) %>%
@@ -61,9 +61,12 @@ zoo_sml <- zoo %>%
   mutate(group_new = rename_grp(group_fine)) %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
-  merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
-  merge(secchi_photic, by = "date", all.x = TRUE, all.y = TRUE) %>%
-  filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9))
+  filter(!is.na(date)) %>%
+  mult_subset(winterdates))
+  
+#   merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
+#   merge(secchi_photic, by = "date", all.x = TRUE, all.y = TRUE) %>%
+#   filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9))
 #   filter(nig_gr <= photic_zone) %>%
 #   mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr)) %>%
 #   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
