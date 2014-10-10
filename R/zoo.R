@@ -36,24 +36,32 @@ m2_to_l <- function(x, interval) {
   return(count_per_liter)
 }
 
-# select only alive and non-double-count data; 
-# remove taxa that are counted too inconsistently to use (harpacticoid, 
-# bdelloid, ciliate, cyst, various protist);
-# rename groups based on the categories that we ultimately want in the data; 
-# create "year" column;
-# merge with dates and depth data (this only keeps rows that are present in the
-# other data sets, so any times when they sampled zooplankton but not secchi
-# are lost -- need to talk to steph about whether this is what we want or if 
-# we want to interpolate photic zones so we can use all the zoop data); 
-# subset data by date ranges and depths; 
-# convert count units to individuals/liter; 
-# add season column;
-# discard now-unnecessary columns;
-# figure out a way to get sums and percentages - try casting to wide first so
-# each group has its own column, then sum, then calculate percentages based
-# on that sum?
+# dates to use for ice-covered and stratified periods
 dates_to_use <- data.frame(date = as.Date(unique(zoo$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
+
+# Aggregate ALL the data!
+# - select only alive and non-double-count data; 
+# - remove taxa that are counted too inconsistently to use (harpacticoid, 
+# bdelloid, ciliate, cyst, various protist);
+# - rename groups based on the categories that we ultimately want in the data; 
+# - create "year" column;
+# - remove any rows with NA in date;
+# - subset based on dates that are either during ice cover or during 
+# stratification;
+# - add "season" column;
+# - merge with secchi data; 
+# - insert values when secchi is missing (see comments within the code); 
+# - calculate photic zone;
+# - subset to keep rows where lower layer is <= photic zone;
+# - convert count units to individuals/liter
+#
+# Important note: any grouping by year and season will not behave as expected
+# if there are cases where ice-on was early and sampling occurred in 
+# December. For example, 1989-12-31 will be grouped with the previous ice-on
+# season rather than the one ending in spring of 1990. In this data it doesn't
+# appear that there are any such cases, however when I have time to come back
+# to this I should do it in a way that's robust to this issue.
 
 zoo_sml <- zoo %>% 
   select(-genus, -species, -endemic_cosmo, -lifestage_gen, 
