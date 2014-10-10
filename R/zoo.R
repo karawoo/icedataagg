@@ -65,15 +65,37 @@ zoo_sml <- zoo %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
   filter(!is.na(date)) %>%
-  semi_join(dates_to_use)
-  
-#   merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
-#   merge(secchi_photic, by = "date", all.x = TRUE, all.y = TRUE) %>%
-#   filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9))
+  semi_join(dates_to_use, by = "date") %>%
+  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
+  merge(secchi[, c("date", "secchi_depth")], by = "date", all.x = TRUE) %>%
+  ## add missing secchi according to the following rules:
+  # 1) if missing values are before the start of secchi monitoring, use average
+  # winter or summer secchi from the whole time series
+  # 2) if missing values are within a year that has other secchi measurements,
+  # use the average secchi from that season
+  # 3) if missing values are within the time series but there were no other 
+  # secchi measurements in that year, use the average winter or summer secchi
+  # from the whole time series
+  mutate(secchi_depth = ifelse(is.na(secchi_depth) & season == "winter"
+                               & date <= as.Date("1964-01-17"), winter_secchi,
+                               ifelse(is.na(secchi_depth) & season == "summer"
+                                      & date <= as.Date("1964-01-17"), 
+                                      summer_secchi, secchi_depth))) %>%
+  group_by(year(date), season) %>%
+  mutate(secchi_depth = ifelse(is.na(secchi_depth),
+                               mean(secchi_depth, na.rm = TRUE),
+                               secchi_depth)) %>%
+  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "winter", 
+                               winter_secchi, ifelse(is.nan(secchi_depth) 
+                                                     & season == "summer", 
+                                                     summer_secchi, 
+                                                     secchi_depth)))
+
+
+
 #   filter(nig_gr <= photic_zone) %>%
 #   mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr)) %>%
-#   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
-#   select(-year.y, -iceon_year, -count, -iceon, -iceoff, -secchi_depth) %>%
+
 #   group_by(year.x, season, group_new) %>%
 #   summarize(count_total = sum(count_liter) )%>% 
 #   dcast(., year.x + season ~ group_new, fun.aggregate = sum, 
