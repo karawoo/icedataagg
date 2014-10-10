@@ -1,5 +1,10 @@
 Ice Data Aggregation Notes -*- mode: org -*-
 
+* 2014-10-10
+- there's a problem with double counts in 1945 (at least) -- codes 15 and 16 are double-counts, but it appears that in 1945 (and maybe other years, I haven't checked) they are some of the only Epischura codes used. As a result the counts in 1945 in the final aggregated data set are all 0. need to decide what to do about this (probably keep codes 15 and 16 in 1945)
+- Important note about the way I aggregate the zooplankton data: any grouping by year and season will not behave as expected if there are cases where ice-on was early and sampling occurred in December. For example, 1989-12-31 will be grouped with the previous ice-on season rather than the one ending in spring of 1990. In this data it doesn't appear that there are any such cases, however when I have time to come back to this I should do it in a way that's robust to this issue.
+
+
 * 2014-10-02
 - stations with multiple n -- we ask for the number of samples that's being aggregated, but what if they sampled some things x times and other things y times (e.g. secchi 10x but zooplankton only 5, or something)?
 - if there are samples for which there is no secchi/photic zone info -- discard these? or try to interpolate secchi? - interpolate using average photic zone for that season
