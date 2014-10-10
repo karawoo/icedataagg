@@ -75,7 +75,7 @@ zoo_sml <- zoo %>%
   filter(!is.na(date)) %>%
   semi_join(dates_to_use, by = "date") %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
-  merge(secchi[, c("date", "secchi_depth")], by = "date", all.x = TRUE) %>%
+  left_join(secchi[, c("date", "secchi_depth")], by = "date") %>%
   ## add missing secchi according to the following rules:
   # 1) if missing values are before the start of secchi monitoring, use average
   # winter or summer secchi from the whole time series
@@ -89,7 +89,7 @@ zoo_sml <- zoo %>%
                                ifelse(is.na(secchi_depth) & season == "summer"
                                       & date <= as.Date("1964-01-17"), 
                                       summer_secchi, secchi_depth))) %>%
-  group_by(year(date), season) %>%
+  group_by(year, season) %>%
   mutate(secchi_depth = ifelse(is.na(secchi_depth),
                                mean(secchi_depth, na.rm = TRUE),
                                secchi_depth)) %>%
@@ -97,14 +97,32 @@ zoo_sml <- zoo %>%
                                winter_secchi, ifelse(is.nan(secchi_depth) 
                                                      & season == "summer", 
                                                      summer_secchi, 
-                                                     secchi_depth)))
+                                                     secchi_depth))) %>%
+  mutate(photic_zone = pz(secchi_depth)) %>%
+  ungroup() %>%
+  filter(nig_gr <= photic_zone) %>%
+  mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr))
 
+# calculate total individuals per liter in each sample, then average
+# individuals per liter in each season
+totzoopcount <- zoo_sml %>%
+  group_by(year, date, season, ver_gr, nig_gr) %>%
+  summarize(totzoop = sum(count_liter)) %>%
+  group_by(year, season) %>%
+  summarize(TotZoop.Count = mean(totzoop))
+  
+# calculate percentages of different taxa
+zoopperc <- zoo_sml %>%
+  group_by(year, season, group_new) %>%
+  summarize(count_total = sum(count_liter)) %>% 
+  dcast(., year + season ~ group_new, fun.aggregate = sum, 
+        value.var = "count_total") %>%
+  rowwise %>%
+  mutate(total = sum(calanoid, cladoceran, cyclopoid, daphnia, rotifer)) %>%
+  mutate(Perc.Daphnia = daphnia / total, 
+         Perc.OthCladoc = cladoceran / total,
+         Perc.Cyclos = cyclopoid / total, 
+         Perc.Calan = calanoid / total, 
+         Perc.Rotif = rotifer / total) %>%
+  select(-calanoid, -cladoceran, -cyclopoid, -daphnia, -rotifer, -total)
 
-
-#   filter(nig_gr <= photic_zone) %>%
-#   mutate(count_liter = m2_to_l(count, interval = nig_gr - ver_gr)) %>%
-
-#   group_by(year.x, season, group_new) %>%
-#   summarize(count_total = sum(count_liter) )%>% 
-#   dcast(., year.x + season ~ group_new, fun.aggregate = sum, 
-#         value.var = "count_total")
