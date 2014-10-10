@@ -1,6 +1,7 @@
 # Determine sampling date ranges and depths
 
 library('dplyr')
+library('lubridate')
 
 source("R/datadir.R")
 
@@ -46,6 +47,8 @@ extrayears <- data.frame(iceon = c("2007-02-25", "2008-02-11"),
 
 winterdates <- rbind(winter, extrayears)
 
+winterints <- interval(winterdates$iceon, winterdates$iceoff)
+
 ###### Summer sample dates - use July, August, September
 
 
@@ -65,37 +68,15 @@ pz <- function(secchi) {
 summer_secchi <- mean(secchi[secchi$month %in% c(7, 8, 9), "secchi_depth"], 
                       na.rm = TRUE)
 
-# winter secchi - gotta figure out a better way than this nested loop
-mult_subset <- function(x, datecol, y, iceoncol, iceoffcol) {
-  keeps <- c()
-  for(j in seq_len(nrow(x))) {
-    for (i in seq_len(nrow(y))) {
-      if (x[j, datecol] >= y[i, iceoncol] 
-          & x[j, datecol] <= y[i, iceoffcol]) {
-        keeps <- c(keeps, j)
-      }
-    }
-  }
-  x[keeps, ]
+# winter secchi
+date_subset <- function(x, intervals) {
+    any(x %within% intervals)
 }
 
-winter_secchi <- mean(
-  mult_subset(secchi, "date", winterdates, "iceon", "iceoff")$secchi_depth, 
-  na.rm = TRUE)
+winter_secchi <- secchi %>%
+  filter(sapply(date, date_subset, winterints)) %>%
+  summarize(mean(secchi_depth))  
 
 # calculate photic zone for each dates  
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
-
-mult_subset_2 <- function(x, y) {
-  year <- as.numeric(format(x$date, format = "%Y"))
-  ysub <- y[y$iceon_year == year | y$iceoff_year == year, ]
-  for (i in seq_len(nrow(ysub))) {
-    if (x$date >= ysub[i, "iceon"] & x$date <= ysub[i, "iceoff"]) {
-      keeps <- c(keeps, x$id)
-    }
-  }
-}
-
-apply()
-  

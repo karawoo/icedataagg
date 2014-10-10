@@ -26,7 +26,7 @@ chla_secchi <- merge(chla_dates,
 chla_agg <- chla_secchi %>%
   do(na.omit(.)) %>%
   select(-iceon_year) %>%
-  filter(iceon <= date & date <= iceoff | month(date) %in% c(7, 8, 9)) %>%
+  filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9)) %>%
   filter(depth <= photic_zone) %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
   group_by(Year, season) %>%

@@ -52,7 +52,10 @@ m2_to_l <- function(x, interval) {
 # figure out a way to get sums and percentages - try casting to wide first so
 # each group has its own column, then sum, then calculate percentages based
 # on that sum?
-system.time(zoo_sml <- zoo %>% 
+dates_to_use <- data.frame(date = as.Date(unique(zoo$date))) %>%
+  filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
+
+zoo_sml <- zoo %>% 
   select(-genus, -species, -endemic_cosmo, -lifestage_gen, 
          -lifestage_num, -lifestage_cop, -gender) %>%
   filter(status != "dead" & !kod %in% dblcounts) %>%
@@ -62,7 +65,7 @@ system.time(zoo_sml <- zoo %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
   filter(!is.na(date)) %>%
-  mult_subset(winterdates))
+  semi_join(dates_to_use)
   
 #   merge(winterdates, by.x = "year", by.y = "iceoff_year") %>%
 #   merge(secchi_photic, by = "date", all.x = TRUE, all.y = TRUE) %>%
