@@ -75,7 +75,8 @@ date_subset <- function(x, intervals) {
 
 winter_secchi <- secchi %>%
   filter(sapply(date, date_subset, winterints)) %>%
-  summarize(mean(secchi_depth))  
+  summarize(winter = mean(secchi_depth))
+winter_secchi <- winter_secchi[1, 1]  
 
 # calculate photic zone for each dates  
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
