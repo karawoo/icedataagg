@@ -47,7 +47,7 @@ extrayears <- data.frame(iceon = c("2007-02-25", "2008-02-11"),
 
 winterdates <- rbind(winter, extrayears)
 
-winterints <- interval(winterdates$iceon, winterdates$iceoff)
+winterints <- interval(winterdates$iceon, winterdates$iceoff, tz = "IRKT")
 
 ###### Summer sample dates - use July, August, September
 
