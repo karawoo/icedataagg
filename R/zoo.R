@@ -126,3 +126,19 @@ zoopperc <- zoo_sml %>%
          Perc.Rotif = rotifer / total) %>%
   select(-calanoid, -cladoceran, -cyclopoid, -daphnia, -rotifer, -total)
 
+# calculate start and end dates and number of samples and depths
+sample_info_zoo <- zoo_sml %>%
+  mutate(depthint = paste(ver_gr, nig_gr, sep = ":")) %>%
+  group_by(year, season, date) %>%
+  summarize(ndepths = length(unique(depthint))) %>%
+  summarize(avg_ndepths = mean(ndepths),
+            ndates = length(unique(date)), 
+            mindate = min(date), 
+            maxdate = max(date))
+
+# combine all
+zoo_agg <- totzoopcount %>%
+  left_join(zoopperc, by = c("year", "season")) %>%
+  left_join(sample_info_zoo, by = c("year", "season")) %>%
+  arrange(year, desc(season))
+
