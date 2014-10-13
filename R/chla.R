@@ -6,35 +6,39 @@ source("R/datesdepths.R")
 
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 chla$date <- as.Date(chla$date)
+names(chla) <- tolower(names(chla))
 
-# merge chlorophyll data with winterdates - note there's no iceon/iceoff data
-# for 2007
-chla_dates <- merge(chla, winterdates, by.x = "Year", by.y = "iceoff_year",
-                    all.x = TRUE, all.y = FALSE)
+# select correct dates 
+chla_dates <- data.frame(date = as.Date(unique(chla$date))) %>%
+  filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
-# merge with secchi/photic info
-chla_secchi <- merge(chla_dates, 
-                     secchi_photic[, c("date", "secchi_depth", "photic_zone")], 
-                     by = "date", all.x = TRUE, all.y = FALSE)
-
-# aggregate: remove rows with NAs; remove iceon_year column; choose data 
-# during ice-covered period or during july, august, september; choose data
-# from depths within the photic zone; add season column; for each season
-# summarize start date, end date, min depth, max depth, mean chla, mean secchi,
-# and mean photic zone depth
-
-chla_agg <- chla_secchi %>%
+# aggregate
+chla_agg <- chla %>%
   do(na.omit(.)) %>%
-  select(-iceon_year) %>%
-  filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9)) %>%
-  filter(depth <= photic_zone) %>%
+  semi_join(chla_dates, by = "date") %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
-  group_by(Year, season) %>%
+  left_join(secchi[, c("date", "secchi_depth")], by = "date") %>%
+  ## add missing secchi according to the following rules:
+  # 1) if missing values are within a year that has other secchi measurements,
+  # use the average secchi from that season
+  # 2) if missing values are within the time series but there were no other 
+  # secchi measurements in that year, use the average winter or summer secchi
+  # from the whole time series
+  group_by(year, season) %>%
+  mutate(secchi_depth = ifelse(is.na(secchi_depth),
+                               mean(secchi_depth, na.rm = TRUE),
+                               secchi_depth)) %>%
+  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "winter", 
+                               winter_secchi, ifelse(is.nan(secchi_depth) 
+                                                     & season == "summer", 
+                                                     summer_secchi, 
+                                                     secchi_depth))) %>%
+  mutate(photic_zone = pz(secchi_depth)) %>%
+  filter(depth <= photic_zone) %>%
   summarize(start = min(date), 
             end = max(date), 
             mindepth = min(depth), 
             maxdepth = max(depth), 
             meanchla = mean(chla), 
-            meansecchi = mean(secchi_depth), 
-            meanphotic = mean(photic_zone))
+            maxchla = max(chla))
 
