@@ -13,7 +13,7 @@ chla_dates <- data.frame(date = as.Date(unique(chla$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
 # aggregate
-chla_agg <- chla %>%
+chla_sml <- chla %>%
   do(na.omit(.)) %>%
   semi_join(chla_dates, by = "date") %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
@@ -34,11 +34,19 @@ chla_agg <- chla %>%
                                                      summer_secchi, 
                                                      secchi_depth))) %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
-  filter(depth <= photic_zone) %>%
-  summarize(start = min(date), 
-            end = max(date), 
-            mindepth = min(depth), 
-            maxdepth = max(depth), 
-            meanchla = mean(chla), 
-            maxchla = max(chla))
+  filter(depth <= photic_zone)
 
+sample_info_chla <- chla_sml %>%
+  group_by(year, season, date) %>%
+  summarize(ndepths = length(unique(depth))) %>%
+  summarize(avg_ndepths = mean(ndepths),
+            ndates = length(unique(date)), 
+            mindate = min(date), 
+            maxdate = max(date))
+
+chla_agg <- chla_sml %>%
+  group_by(year, season) %>%
+  summarize(meanchla = mean(chla), 
+            maxchla = max(chla)) %>%
+  left_join(sample_info_chla, by = c("year", "season")) %>%
+  arrange(year, desc(season))
