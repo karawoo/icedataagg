@@ -85,12 +85,12 @@ phytoperc <- phyto_sml %>%
         value.var = "count_total") %>%
   rowwise %>%
   mutate(total = sum(chloro, crypto, cyano, diat, dino, otherphyto)) %>%
-  mutate(Perc.Chloro = chloro / total, 
-         Perc.Crypto = crypto / total,
-         Perc.Cyano = cyano / total, 
-         Perc.Diat = diat / total, 
-         Perc.Dino = dino / total,
-         Perc.OtherPhyto = otherphyto / total) %>%
+  mutate(Prop.Chloro = chloro / total, 
+         Prop.Crypto = crypto / total,
+         Prop.Cyano = cyano / total, 
+         Prop.Diat = diat / total, 
+         Prop.Dino = dino / total,
+         Prop.OtherPhyto = otherphyto / total) %>%
   select(-c(chloro, crypto, cyano, diat, dino, otherphyto, total))
 
 # calculate start and end dates and number of samples and depths

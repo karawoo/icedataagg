@@ -119,11 +119,11 @@ zoopperc <- zoo_sml %>%
         value.var = "count_total") %>%
   rowwise %>%
   mutate(total = sum(calanoid, cladoceran, cyclopoid, daphnia, rotifer)) %>%
-  mutate(Perc.Daphnia = daphnia / total, 
-         Perc.OthCladoc = cladoceran / total,
-         Perc.Cyclos = cyclopoid / total, 
-         Perc.Calan = calanoid / total, 
-         Perc.Rotif = rotifer / total) %>%
+  mutate(Prop.Daphnia = daphnia / total, 
+         Prop.OthCladoc = cladoceran / total,
+         Prop.Cyclos = cyclopoid / total, 
+         Prop.Calan = calanoid / total, 
+         Prop.Rotif = rotifer / total) %>%
   select(-calanoid, -cladoceran, -cyclopoid, -daphnia, -rotifer, -total)
 
 # calculate start and end dates and number of samples and depths
