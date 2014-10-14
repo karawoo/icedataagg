@@ -1,5 +1,15 @@
 Ice Data Aggregation Notes -*- mode: org -*-
 
+* 2014-10-13
+- remove phyto codes without chloroplasts?
+- should standardize TotZoop.Count and Phyto.CellCount since they are analogous fields for zooplankton/phytoplankton yet have very different names
+- need to make sure we're clear about whether percentages sum to 1 or 100 -- Aaron and I think we should sum to 1 and call it "proportion" instead of "percent" since people will probably calculate proportions first and multiply by 100 to get percent
+- SamplePeriod.n - how are we defining this? does one sample = 1 date? or if they did multiple samples at different depths does one sample = 1 tow?
+- reporting number of samples: have two fields: number of dates and average number of depths sampled per date
+- have free-form field for people to describe any weirdness in number of replicates
+- make sure to normalize by number of samples (liters) when calculating total phyto counts.
+- use 800 m for StationDepth (Hampton 2008)
+
 * 2014-10-10
 - there's a problem with double counts in 1945 (at least) -- codes 15 and 16 are double-counts, but it appears that in 1945 (and maybe other years, I haven't checked) they are some of the only Epischura codes used. As a result the counts in 1945 in the final aggregated data set are all 0. need to decide what to do about this (probably keep codes 15 and 16 in 1945)
 - Important note about the way I aggregate the zooplankton data: any grouping by year and season will not behave as expected if there are cases where ice-on was early and sampling occurred in December. For example, 1989-12-31 will be grouped with the previous ice-on season rather than the one ending in spring of 1990. In this data it doesn't appear that there are any such cases, however when I have time to come back to this I should do it in a way that's robust to this issue.
