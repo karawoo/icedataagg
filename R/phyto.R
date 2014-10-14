@@ -105,7 +105,7 @@ sample_info_phyto <- phyto_sml %>%
 # combine all
 phyto_agg <- totphytocount %>%
   left_join(phytoperc, by = c("year", "season")) %>%
-  left_join(sample_info, by = c("year", "season")) %>%
+  left_join(sample_info_phyto, by = c("year", "season")) %>%
   arrange(year, desc(season))
 
   
