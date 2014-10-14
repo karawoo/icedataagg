@@ -81,3 +81,6 @@ winter_secchi <- winter_secchi[1, 1]
 # calculate photic zone for each dates  
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
+# calculate ice duration
+ice_duration <- winterdates %>%
+  mutate(ice_duration = iceoff - iceon)
