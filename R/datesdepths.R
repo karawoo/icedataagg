@@ -82,5 +82,12 @@ winter_secchi <- winter_secchi[1, 1]
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
 # calculate ice duration
-ice_duration <- winterdates %>%
-  mutate(ice_duration = iceoff - iceon)
+ice_duration <- winter %>%
+  rename(year = iceoff_year) %>%
+  mutate(Ice.Duration = iceoff - iceon) %>%
+  select(-c(iceon_year, iceoff, iceon)) %>%
+  group_by(year) %>%
+  do(expand.grid(year = .$year, season = c("summer", "winter"), 
+                 Ice.Duration = .$Ice.Duration)) %>%
+  mutate(Ice.Duration = ifelse(season == "summer", NA, Ice.Duration)) %>%
+  arrange(year, desc(season))
