@@ -40,12 +40,31 @@ sample_replicates <- rbind_list(
   select(-c(start, end))
 
 # combine all the data!
-alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg) %>%
+alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   lapply(function(x) subset(x, select = -c(avg_ndepths, ndates, mindate, maxdate))) %>%
   Reduce(function(x, y) merge(x, y, by = c("year", "season"), all = TRUE), .) %>%
   merge(sample_replicates, by = c("year", "season"), all = TRUE) %>%
+  left_join(ice_duration[, c("year", "season", "Ice.Duration")],
+                         by = c("year", "season")) %>%
+  # add station and lake metadata:
   cbind(stmeta) %>%
-  cb(lakemeta)
+  cbind(lakemeta) %>%
+    # add missing columns:
+  do(cbind(., data.frame(
+    matrix(
+      NA, 
+      nrow = 1, 
+      ncol = length(template_names[which(!template_names %in% names(.))]), 
+      dimnames = list(c(), template_names[which(!template_names
+                                                %in% names(.))])), 
+    stringsAsFactors = FALSE)
+  )) %>%
+  # fill in a few fields
+  mutate(MultipleStations = "No", SampleType = "In situ") %>%
+  # reorder columns to match template
+  do(.[, c("year", "season", template_names)]) %>%
+  # arrange by year and season 
+  arrange(year, desc(season))
 
 
 
