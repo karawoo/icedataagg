@@ -75,7 +75,7 @@ totphytocount <- phyto_sml %>%
   group_by(year, date, season, depth) %>%
   summarize(totphyto = sum(count_l)) %>%
   group_by(year, season) %>%
-  summarize(Phyto.CellCount = mean(totphyto))
+  summarize(TotPhyto.CellCount = mean(totphyto))
 
 # calculate percentages of different taxa
 phytoperc <- phyto_sml %>%
