@@ -3,10 +3,10 @@ lakemeta <- data.frame(
     LakeRegLoc = "Siberia",
     LakeCountry = "Russia",
     LakeArea = 31722,
-    LakeMeanDepth = "insert mean depth here",
+    LakeMeanDepth = 720,
     LakeMaxDepth = 1642,
     LakeElevation = 455.5,
-    Watershed = "find this out",
+    Watershed = 540000,
     H2OResidence = (330 * 365.25),
     LakeMaxFetch = 636,
     stringsAsFactors = FALSE
@@ -23,3 +23,9 @@ lakemeta <- data.frame(
 
 ### fetch:
 ### http://www.tahoebaikal.org/about/lake-tahoe-and-lake-baikal-watersheds/
+
+### mean depth:
+### Kozhov - Lake Baikal and Its Life
+
+### watershed:
+### Baikalovedeniye book
