@@ -14,7 +14,7 @@ Ice Data Aggregation Notes -*- mode: org -*-
 - use 800 m for StationDepth (Hampton 2008)
 
 * 2014-10-10
-- there's a problem with double counts in 1945 (at least) -- codes 15 and 16 are double-counts, but it appears that in 1945 (and maybe other years, I haven't checked) they are some of the only Epischura codes used. As a result the counts in 1945 in the final aggregated data set are all 0. need to decide what to do about this (probably keep codes 15 and 16 in 1945)
+- there's a problem with double counts in 1945 (at least) -- codes 15 and 16 are double-counts, but it appears that in 1945 (and maybe other years, I haven't checked) they are some of the only Epischura codes used. As a result the counts in 1945 in the final aggregated data set are all 0. need to decide what to do about this. Steph says let's just leave out 1945 zoop data.
 - Important note about the way I aggregate the zooplankton data: any grouping by year and season will not behave as expected if there are cases where ice-on was early and sampling occurred in December. For example, 1989-12-31 will be grouped with the previous ice-on season rather than the one ending in spring of 1990. In this data it doesn't appear that there are any such cases, however when I have time to come back to this I should do it in a way that's robust to this issue.
 
 
@@ -23,13 +23,12 @@ Ice Data Aggregation Notes -*- mode: org -*-
 - if there are samples for which there is no secchi/photic zone info -- discard these? or try to interpolate secchi? - interpolate using average photic zone for that season
 - don't include ciliates (or harpacticoids, bdelloids, cysts, "various protists") in zooplankton data because they're counted too inconsistently
 - if there are different sample start and end dates for different parameters use the first start and last end for the "sample dates" field
-- there's only iceon/iceoff data through 2006 but chla data goes to 2008
 - no secchi data before 1964 or in 1984 - for these just use averages from the whole time series in winter or summer. there's been no trend in secchi so this should be fine
-- iceon/iceoff data only goes to 2006 but secchi and chlorophyll go to 2008. for these few years look at gaps in sampling in winter to determine iceon and iceoff for 2007 and 2008
-- need to figure out a better way to subset the data based on ice date ranges. currently I merge data and ice dates by year using iceoff year and then subset the data based on whether the date falls within the ice date range /in that row/, but this will lose any samples in a given year when the lake froze before the end of December.
+- iceon/iceoff data only goes to 2006 but secchi and chlorophyll go to 2008. for these few years look at gaps in sampling in winter to determine iceon and iceoff for 2007 and 2008. don't use these dates for the iceon/iceoff fields in the final aggregated data set though -- just use to calculate which dates of chla to use.
+- ~need to figure out a better way to subset the data based on ice date ranges. currently I merge data and ice dates by year using iceoff year and then subset the data based on whether the date falls within the ice date range /in that row/, but this will lose any samples in a given year when the lake froze before the end of December.~~
 
 * 2014-10-01
-- need to add an "other copepod" category to the zooplankton data (so there will be calanoid, cyclopoid, and other)
+- need to add an "other copepod" category to the zooplankton data (so there will be calanoid, cyclopoid, and other) -- or is this really necessary? I thought of it because harpacticoids are occasionally present in data, but they're counted too infrequently to use.
 
 * 2014-09-30
 - what to do about samples where we're missing photic zone info?
