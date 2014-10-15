@@ -46,7 +46,7 @@ sample_info_chla <- chla_sml %>%
 
 chla_agg <- chla_sml %>%
   group_by(year, season) %>%
-  summarize(meanchla = mean(chla), 
-            maxchla = max(chla)) %>%
+  summarize(Chla.Ave = mean(chla), 
+            Chla.Max = max(chla)) %>%
   left_join(sample_info_chla, by = c("year", "season")) %>%
   arrange(year, desc(season))
