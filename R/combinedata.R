@@ -12,7 +12,7 @@ source("R/phyto.R")
 # colnames
 library('openxlsx')
 template <- read.xlsx("./data/IceDataTemplate-Beta_draft5_20141014_kw.xlsx", 
-                      sheet = 1, startRow = 10, colNames = FALSE)
+                      sheet = 1, startRow = 12, colNames = FALSE)
 template_names <- template$X3
 
 # one master set of start/end dates, number of samples, and average number of
