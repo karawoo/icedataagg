@@ -31,10 +31,10 @@ sample_replicates <- rbind_list(
             SamplePeriod.n = mean(ndates, na.rm = TRUE), 
             SamplePeriod.depths = mean(avg_ndepths, na.rm = TRUE)) %>%
   mutate(SampleStart.Day = day(start), 
-         SampleStart.Mon = month(start), 
+         SampleStart.Mon = month(start, label = TRUE, abbr = TRUE), 
          SampleStart.Year = year(start), 
          SampleEnd.Day = day(end), 
-         SampleEnd.Mon = month(end), 
+         SampleEnd.Mon = month(end, label = TRUE, abbr = TRUE), 
          SampleEnd.Year = year(end), 
          SampleNarrat = "SamplePeriod.n and SamplePeriod.depths are averages of the number of samples and sampling depths for different measurements.") %>%
   select(-c(start, end))
