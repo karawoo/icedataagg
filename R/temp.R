@@ -38,9 +38,7 @@ temp_sml <- temp %>%
 
 sample_info_temp <- temp_sml %>%
   group_by(year, season, date) %>%
-  summarize(ndepths = length(unique(depth))) %>%
-  summarize(avg_ndepths = mean(ndepths),
-            ndates = length(unique(date)), 
+  summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
 

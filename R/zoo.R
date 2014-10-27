@@ -130,9 +130,7 @@ zoopperc <- zoo_sml %>%
 sample_info_zoo <- zoo_sml %>%
   mutate(depthint = paste(ver_gr, nig_gr, sep = ":")) %>%
   group_by(year, season, date) %>%
-  summarize(ndepths = length(unique(depthint))) %>%
-  summarize(avg_ndepths = mean(ndepths),
-            ndates = length(unique(date)), 
+  summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
 

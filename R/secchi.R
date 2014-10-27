@@ -18,5 +18,4 @@ secchi_agg <- secchi %>%
             ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date)) %>%
-  mutate(avg_ndepths = NA) %>%
   arrange(year, desc(season))
