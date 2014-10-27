@@ -10,10 +10,9 @@ source("R/zoo.R")
 source("R/phyto.R")
 
 # colnames
-library('openxlsx')
-template <- read.xlsx("./data/IceDataTemplate-Beta_draft5_20141014_kw.xlsx", 
-                      sheet = 1, startRow = 12, colNames = FALSE)
-template_names <- template$X3
+template <- read.csv("./data/IceDataTemplate-Beta2_draft2_24Oct2014.csv", 
+                     stringsAsFactors = FALSE)
+template_names <- template$fieldname
 
 # one master set of start/end dates, number of samples, and average number of
 # depths per sample. 
