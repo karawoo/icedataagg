@@ -59,7 +59,9 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   )) %>%
   # fill in a few fields
   mutate(multiplestations = "no", sampletype = "in situ", 
-         sidata = "no", fadata = "no", gutdata = "no") %>%
+         sidata = "no", fadata = "no", gutdata = "no", 
+         icedepth = ifelse(season == "iceoff", 0, NA), 
+         snowdepth = ifelse(season == "iceoff", 0, NA)) %>%
   # reorder columns to match template
   do(.[, template_names]) %>%
   # arrange by year and season 
