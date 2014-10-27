@@ -1,6 +1,6 @@
 stmeta <- data.frame(
-    StationDistance = 2.2,
-    StationDepth = 800,
-    StationLat = 51.88,
-    StationLong = 105.083889
+    stationdistance = 2.2,
+    stationdepth = 800,
+    stationlat = 51.88,
+    stationlong = 105.083889
 )

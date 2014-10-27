@@ -75,7 +75,8 @@ totphytocount <- phyto_sml %>%
   group_by(year, date, season, depth) %>%
   summarize(totphyto = sum(count_l)) %>%
   group_by(year, season) %>%
-  summarize(TotPhyto.CellCount = mean(totphyto))
+  summarize(avephytocount = mean(totphyto), 
+            maxphytocount = max(totphyto))
 
 # calculate percentages of different taxa
 phytoperc <- phyto_sml %>%
@@ -85,12 +86,12 @@ phytoperc <- phyto_sml %>%
         value.var = "count_total") %>%
   rowwise %>%
   mutate(total = sum(chloro, crypto, cyano, diat, dino, otherphyto)) %>%
-  mutate(Prop.Chloro = chloro / total, 
-         Prop.Crypto = crypto / total,
-         Prop.Cyano = cyano / total, 
-         Prop.Diat = diat / total, 
-         Prop.Dino = dino / total,
-         Prop.OtherPhyto = otherphyto / total) %>%
+  mutate(propchloro = chloro / total, 
+         propcrypto = crypto / total,
+         propcyano = cyano / total, 
+         propdiatom = diat / total, 
+         propdino = dino / total,
+         propotherphyto = otherphyto / total) %>%
   select(-c(chloro, crypto, cyano, diat, dino, otherphyto, total))
 
 # calculate start and end dates and number of samples and depths

@@ -44,6 +44,6 @@ sample_info_temp <- temp_sml %>%
 
 temp_agg <- temp_sml %>%
   group_by(year, season) %>%
-  summarize(Water.Temp = mean(temp)) %>%
+  summarize(watertemp = mean(temp)) %>%
   left_join(sample_info_temp, by = c("year", "season")) %>%
   arrange(year, desc(season))

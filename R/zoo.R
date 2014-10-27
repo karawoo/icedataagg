@@ -109,7 +109,8 @@ totzoopcount <- zoo_sml %>%
   group_by(year, date, season, ver_gr, nig_gr) %>%
   summarize(totzoop = sum(count_liter)) %>%
   group_by(year, season) %>%
-  summarize(TotZoop.Count = mean(totzoop))
+  summarize(avezoopcount = mean(totzoop),
+            maxzoopcount = max(totzoop))
   
 # calculate percentages of different taxa
 zoopperc <- zoo_sml %>%
@@ -119,11 +120,11 @@ zoopperc <- zoo_sml %>%
         value.var = "count_total") %>%
   rowwise %>%
   mutate(total = sum(calanoid, cladoceran, cyclopoid, daphnia, rotifer)) %>%
-  mutate(Prop.Daphnia = daphnia / total, 
-         Prop.OthCladoc = cladoceran / total,
-         Prop.Cyclos = cyclopoid / total, 
-         Prop.Calan = calanoid / total, 
-         Prop.Rotif = rotifer / total) %>%
+  mutate(propdaphnia = daphnia / total, 
+         propothercladoc = cladoceran / total,
+         propcyclopoid = cyclopoid / total, 
+         propcalanoid = calanoid / total, 
+         proprotifer = rotifer / total) %>%
   select(-calanoid, -cladoceran, -cyclopoid, -daphnia, -rotifer, -total)
 
 # calculate start and end dates and number of samples and depths

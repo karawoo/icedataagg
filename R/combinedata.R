@@ -27,23 +27,22 @@ sample_replicates <- rbind_list(
   group_by(year, season) %>%
   summarize(start = min(mindate), 
             end = max(maxdate), 
-            SamplePeriod.n = mean(ndates, na.rm = TRUE), 
-            SamplePeriod.depths = mean(avg_ndepths, na.rm = TRUE)) %>%
-  mutate(SampleStart.Day = day(start), 
-         SampleStart.Mon = month(start, label = TRUE, abbr = TRUE), 
-         SampleStart.Year = year(start), 
-         SampleEnd.Day = day(end), 
-         SampleEnd.Mon = month(end, label = TRUE, abbr = TRUE), 
-         SampleEnd.Year = year(end), 
-         SampleNarrat = "SamplePeriod.n and SamplePeriod.depths are averages of the number of samples and sampling depths for different measurements.") %>%
+            periodn = mean(ndates, na.rm = TRUE)) %>%
+  mutate(startday = day(start), 
+         startmon = month(start, label = TRUE, abbr = TRUE), 
+         startyear = year(start), 
+         endday = day(end), 
+         endmonth = month(end, label = TRUE, abbr = TRUE), 
+         endyear = year(end), 
+         samplenarrat = "peiodn is the eaverage of the number of sampling dates for different measurements.") %>%
   select(-c(start, end))
 
 # combine all the data!
 alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
-  lapply(function(x) subset(x, select = -c(avg_ndepths, ndates, mindate, maxdate))) %>%
+  lapply(function(x) subset(x, select = -c(ndates, mindate, maxdate))) %>%
   Reduce(function(x, y) merge(x, y, by = c("year", "season"), all = TRUE), .) %>%
   merge(sample_replicates, by = c("year", "season"), all = TRUE) %>%
-  left_join(ice_duration[, c("year", "season", "Ice.Duration")],
+  left_join(ice_duration[, c("year", "season", "iceduration")],
                          by = c("year", "season")) %>%
   # add station and lake metadata:
   cbind(stmeta) %>%
@@ -59,15 +58,16 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
     stringsAsFactors = FALSE)
   )) %>%
   # fill in a few fields
-  mutate(MultipleStations = "No", SampleType = "In situ") %>%
+  mutate(multiplestations = "no", sampletype = "in situ", 
+         sidata = "no", fadata = "no", gutdata = "no") %>%
   # reorder columns to match template
-  do(.[, c("year", "season", template_names)]) %>%
+  do(.[, template_names]) %>%
   # arrange by year and season 
   arrange(year, desc(season))
 
 
-write.csv(alldata, "./data/baikal_long.csv", row.names = FALSE)
-write.csv(t(alldata), "./data/baikal_agg_20141015.csv")
+write.csv(alldata, "./data/baikal_long_20141027.csv", row.names = FALSE)
+write.csv(t(alldata), "./data/baikal_agg_20141027.csv")
 
 
 

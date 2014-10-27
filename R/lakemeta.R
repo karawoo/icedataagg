@@ -1,14 +1,14 @@
 lakemeta <- data.frame(
-    LakeName = "Lake Baikal",
-    LakeRegLoc = "Siberia",
-    LakeCountry = "Russia",
-    LakeArea = 31722,
-    LakeMeanDepth = 720,
-    LakeMaxDepth = 1642,
-    LakeElevation = 455.5,
-    Watershed = 540000,
-    H2OResidence = (330 * 365.25),
-    LakeMaxFetch = 636,
+    lakename = "Lake Baikal",
+    lakeregloc = "Siberia",
+    lakecountry = "Russia",
+    lakearea = 31722,
+    lakemeandepth = 720,
+    lakemaxdepth = 1642,
+    lakeelevation = 455.5,
+    watershedarea = 540000,
+    h2oresidence = (330 * 365.25),
+    lakefetch = 636,
     stringsAsFactors = FALSE
 )
 
