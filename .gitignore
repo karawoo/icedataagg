@@ -3,5 +3,4 @@
 .Rhistory
 .RData
 template_notes.txt
-data/iceonoff.csv
-data/IceDataTemplate-Beta_draft5_20141014_kw.xlsx
+data/*
