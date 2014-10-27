@@ -67,7 +67,8 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   arrange(year, desc(season))
 
 
-
+write.csv(alldata, "./data/baikal_long.csv", row.names = FALSE)
+write.csv(t(alldata), "./data/baikal_agg_20141015.csv")
 
 
 
