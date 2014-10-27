@@ -48,7 +48,7 @@ phyto_sml <- phyto_post %>%
   mutate(group_new = rename_phyto(group)) %>%
   filter(!is.na(date)) %>%
   semi_join(dates_phyto, by = "date") %>%
-  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
+  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "iceoff", "iceon")) %>%
   left_join(secchi[, c("date", "secchi_depth")], by = "date") %>%
   ## add missing secchi according to the following rules:
   # 1) if missing values are within a year that has other secchi measurements,
@@ -60,9 +60,9 @@ phyto_sml <- phyto_post %>%
   mutate(secchi_depth = ifelse(is.na(secchi_depth),
                                mean(secchi_depth, na.rm = TRUE),
                                secchi_depth)) %>%
-  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "winter", 
+  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "iceon", 
                                winter_secchi, ifelse(is.nan(secchi_depth) 
-                                                     & season == "summer", 
+                                                     & season == "iceoff", 
                                                      summer_secchi, 
                                                      secchi_depth))) %>%
   mutate(photic_zone = pz(secchi_depth)) %>%

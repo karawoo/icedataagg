@@ -74,7 +74,7 @@ zoo_sml <- zoo %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
   filter(!is.na(date)) %>%
   semi_join(dates_to_use, by = "date") %>%
-  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
+  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "iceoff", "iceon")) %>%
   left_join(secchi[, c("date", "secchi_depth")], by = "date") %>%
   ## add missing secchi according to the following rules:
   # 1) if missing values are before the start of secchi monitoring, use average
@@ -84,18 +84,18 @@ zoo_sml <- zoo %>%
   # 3) if missing values are within the time series but there were no other 
   # secchi measurements in that year, use the average winter or summer secchi
   # from the whole time series
-  mutate(secchi_depth = ifelse(is.na(secchi_depth) & season == "winter"
+  mutate(secchi_depth = ifelse(is.na(secchi_depth) & season == "iceon"
                                & date <= as.Date("1964-01-17"), winter_secchi,
-                               ifelse(is.na(secchi_depth) & season == "summer"
+                               ifelse(is.na(secchi_depth) & season == "iceoff"
                                       & date <= as.Date("1964-01-17"), 
                                       summer_secchi, secchi_depth))) %>%
   group_by(year, season) %>%
   mutate(secchi_depth = ifelse(is.na(secchi_depth),
                                mean(secchi_depth, na.rm = TRUE),
                                secchi_depth)) %>%
-  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "winter", 
+  mutate(secchi_depth = ifelse(is.nan(secchi_depth) & season == "iceon", 
                                winter_secchi, ifelse(is.nan(secchi_depth) 
-                                                     & season == "summer", 
+                                                     & season == "iceoff", 
                                                      summer_secchi, 
                                                      secchi_depth))) %>%
   mutate(photic_zone = pz(secchi_depth)) %>%

@@ -87,7 +87,7 @@ ice_duration <- winter %>%
   mutate(iceduration = iceoff - iceon) %>%
   select(-c(iceon_year, iceoff, iceon)) %>%
   group_by(year) %>%
-  do(expand.grid(year = .$year, season = c("summer", "winter"), 
+  do(expand.grid(year = .$year, season = c("iceoff", "iceon"), 
                  iceduration = .$iceduration)) %>%
-  mutate(iceduration = ifelse(season == "summer", 0, iceduration)) %>%
+  mutate(iceduration = ifelse(season == "iceoff", 0, iceduration)) %>%
   arrange(year, desc(season))

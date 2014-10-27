@@ -10,7 +10,7 @@ secchi_dates <- data.frame(date = as.Date(unique(secchi$date))) %>%
 secchi_agg <- secchi %>%
   do(na.omit(.)) %>%
   semi_join(secchi_dates, by = "date") %>%
-  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "summer", "winter")) %>%
+  mutate(season = ifelse(month(date) %in% c(7, 8, 9), "iceoff", "iceon")) %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
   group_by(year, season) %>%
   summarize(secchidepth = mean(secchi_depth, na.rm = TRUE), 
