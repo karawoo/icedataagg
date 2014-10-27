@@ -16,7 +16,7 @@ template_names <- template$fieldname
 
 # one master set of start/end dates, number of samples, and average number of
 # depths per sample. 
-sample_info_cols <- c("year", "season", "avg_ndepths", "ndates", "mindate", "maxdate")
+sample_info_cols <- c("year", "season", "ndates", "mindate", "maxdate")
 
 sample_replicates <- rbind_list(
   secchi_agg[, sample_info_cols], 
