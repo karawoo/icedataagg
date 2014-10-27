@@ -96,7 +96,7 @@ phytoperc <- phyto_sml %>%
 
 # calculate start and end dates and number of samples and depths
 sample_info_phyto <- phyto_sml %>%
-  group_by(year, season, date) %>%
+  group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))

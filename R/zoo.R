@@ -130,7 +130,7 @@ zoopperc <- zoo_sml %>%
 # calculate start and end dates and number of samples and depths
 sample_info_zoo <- zoo_sml %>%
   mutate(depthint = paste(ver_gr, nig_gr, sep = ":")) %>%
-  group_by(year, season, date) %>%
+  group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
