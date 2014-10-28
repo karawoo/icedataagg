@@ -1,5 +1,11 @@
 Ice Data Aggregation Notes -*- mode: org -*-
 
+* 2014-10-28
+- [ ] put zeroes instead of NA for phyto/zoo taxa that are never observed
+
+* 2014-10-22
+- [X] put zeroes for ice duration, ice thickness, and snow depth for summer
+
 * 2014-10-14
 - is Ice.Duration the average ice duration at the lake, or specific ice duration for each year? what to write for summer samples?
 
