@@ -1,5 +1,7 @@
 Ice Data Aggregation Notes -*- mode: org -*-
 
+(Testing out making a change to this file and then re-adding it to OSF. Does this update the github repo?)
+
 * 2014-10-28
 - [ ] put zeroes instead of NA for phyto/zoo taxa that are never observed
 
