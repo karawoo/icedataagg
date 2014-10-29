@@ -37,7 +37,7 @@ chla_sml <- chla %>%
   filter(depth <= photic_zone)
 
 sample_info_chla <- chla_sml %>%
-  group_by(year, season, date) %>%
+  group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
