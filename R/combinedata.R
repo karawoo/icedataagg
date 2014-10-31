@@ -29,7 +29,7 @@ sample_replicates <- rbind_list(
             end = max(maxdate), 
             periodn = mean(ndates, na.rm = TRUE)) %>%
   mutate(startday = day(start), 
-         startmon = month(start, label = TRUE, abbr = TRUE), 
+         startmonth = month(start, label = TRUE, abbr = TRUE), 
          startyear = year(start), 
          endday = day(end), 
          endmonth = month(end, label = TRUE, abbr = TRUE), 
@@ -68,8 +68,8 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   arrange(year, desc(season))
 
 # 
-# write.csv(alldata, "./data/baikal_long_20141029.csv", row.names = FALSE)
-# write.csv(t(alldata), "./data/baikal_agg_20141029.csv")
+# write.csv(alldata, "./data/baikal_long_20141031.csv", row.names = FALSE)
+# write.csv(t(alldata), "./data/baikal_agg_20141031.csv")
 # 
 
 
