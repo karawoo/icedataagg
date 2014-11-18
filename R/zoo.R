@@ -4,6 +4,7 @@ library('reshape2')
 
 source("R/datadir.R")
 source("R/datesdepths.R")
+source("R/co_var.R")
 
 zoo <- read.csv(paste0(datadir, "Longterm_data/zoo/data/zoopzeroskey_alldepths.csv"), 
                 stringsAsFactors = FALSE)
@@ -109,8 +110,9 @@ totzoopcount <- zoo_sml %>%
   group_by(year, date, season, ver_gr, nig_gr) %>%
   summarize(totzoop = sum(count_liter)) %>%
   group_by(year, season) %>%
-  summarize(avezoopcount = mean(totzoop),
-            maxzoopcount = max(totzoop))
+  summarize(avezoopcount = mean(totzoop, na.rm = TRUE),
+            maxzoopcount = max(totzoop, na.rm = TRUE),
+            cvzoopcount = co_var(totzoop, na.rm = TRUE))
   
 # calculate percentages of different taxa
 zoopperc <- zoo_sml %>%

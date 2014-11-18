@@ -3,6 +3,7 @@ library('dplyr')
 
 source("R/datadir.R")
 source("R/datesdepths.R")
+source("R/co_var.R")
 
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 chla$date <- as.Date(chla$date)
@@ -44,7 +45,8 @@ sample_info_chla <- chla_sml %>%
 
 chla_agg <- chla_sml %>%
   group_by(year, season) %>%
-  summarize(avechla = mean(chla), 
-            maxchla = max(chla)) %>%
+  summarize(avechla = mean(chla, na.rm = TRUE), 
+            maxchla = max(chla, na.rm = TRUE),
+            cvchla = co_var(chla, na.rm = TRUE)) %>%
   left_join(sample_info_chla, by = c("year", "season")) %>%
   arrange(year, desc(season))

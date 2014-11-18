@@ -1,5 +1,6 @@
 # combine all aggregated baikal data
 
+source("R/co_var.R")
 source("R/lakemeta.R")
 source("R/stmeta.R")
 source("R/datesdepths.R")
@@ -10,7 +11,7 @@ source("R/zoo.R")
 source("R/phyto.R")
 
 # colnames
-template <- read.csv("./data/IceDataTemplate-Beta2_draft2_24Oct2014.csv", 
+template <- read.csv("./data/IceEcologyDataTemplate_17Nov2014.csv", 
                      stringsAsFactors = FALSE)
 template_names <- template$fieldname
 
@@ -66,10 +67,10 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   do(.[, template_names]) %>%
   # arrange by year and season 
   arrange(year, desc(season))
-
+ 
 # 
-# write.csv(alldata, "./data/baikal_long_20141031.csv", row.names = FALSE)
-# write.csv(t(alldata), "./data/baikal_agg_20141031.csv")
+# write.csv(alldata, "./data/baikal_long_20141118.csv", row.names = FALSE)
+# write.csv(t(alldata), "./data/baikal_agg_20141118.csv")
 # 
 
 

@@ -4,6 +4,7 @@ library('reshape2')
 
 source("R/datadir.R")
 source("R/datesdepths.R")
+source("R/co_var.R")
 
 phyto <- read.csv(paste0(datadir, 
                   "Longterm_data/phyto/Baikal_Phyto_zeroesInc_2countRemoved_KeyUpdate_20120728.csv"), 
@@ -75,8 +76,9 @@ totphytocount <- phyto_sml %>%
   group_by(year, date, season, depth) %>%
   summarize(totphyto = sum(count_l)) %>%
   group_by(year, season) %>%
-  summarize(avephytocount = mean(totphyto), 
-            maxphytocount = max(totphyto))
+  summarize(avephytocount = mean(totphyto, na.rm = TRUE), 
+            maxphytocount = max(totphyto, na.rm = TRUE),
+            cvphytocount = co_var(totphyto, na.rm = TRUE))
 
 # calculate percentages of different taxa
 phytoperc <- phyto_sml %>%
