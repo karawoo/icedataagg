@@ -62,15 +62,16 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   mutate(multiplestations = "no", sampletype = "in situ", 
          sidata = "no", fadata = "no", gutdata = "no", 
          icedepth = ifelse(season == "iceoff", 0, NA), 
-         snowdepth = ifelse(season == "iceoff", 0, NA)) %>%
+         snowdepth = ifelse(season == "iceoff", 0, NA),
+         researcher = "Kara.Woo") %>%
   # reorder columns to match template
   do(.[, template_names]) %>%
   # arrange by year and season 
   arrange(year, desc(season))
  
-# 
-# write.csv(alldata, "./data/baikal_long_20141118.csv", row.names = FALSE)
-# write.csv(t(alldata), "./data/baikal_agg_20141118.csv")
+#  
+#  write.csv(alldata, "./data/baikal_long_20141119.csv", row.names = FALSE)
+#  write.csv(t(alldata), "./data/baikal_agg_20141119.csv")
 # 
 
 
