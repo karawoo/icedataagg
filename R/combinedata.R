@@ -35,7 +35,7 @@ sample_replicates <- rbind_list(
          endday = day(end), 
          endmonth = month(end, label = TRUE, abbr = TRUE), 
          endyear = year(end), 
-         samplenarrat = "peiodn is the eaverage of the number of sampling dates for different measurements.") %>%
+         samplenarrat = "peiodn is the average of the number of sampling dates for different measurements.") %>%
   select(-c(start, end))
 
 # combine all the data!
