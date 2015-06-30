@@ -55,7 +55,10 @@ winterints <- interval(winterdates$iceon, winterdates$iceoff, tz = "IRKT")
 
 ###### Use secchi to calculate depth of photic zone
 
-# function to calculate photic zone depth
+## function to calculate photic zone depth
+## See Hampton et al. 2014
+## http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0088920
+## DOI: 10.1371/journal.pone.0088920
 pz <- function(secchi) {
   if (!is.numeric(secchi)) stop("secchi must be numeric")
   kd <- 1.7 / secchi
