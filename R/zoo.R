@@ -2,9 +2,9 @@ library('dplyr')
 library('lubridate')
 library('reshape2')
 
-source("R/datadir.R")
-source("R/datesdepths.R")
-source("R/co_var.R")
+source("datadir.R")
+source("datesdepths.R")
+source("co_var.R")
 
 zoo <- read.csv(paste0(datadir, "Longterm_data/zoo/data/zoopzeroskey_alldepths.csv"), 
                 stringsAsFactors = FALSE)

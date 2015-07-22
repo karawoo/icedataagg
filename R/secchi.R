@@ -1,9 +1,9 @@
 library('lubridate')
 library('dplyr')
 
-source("R/datadir.R")
-source("R/datesdepths.R")
-source("R/co_var.R")
+source("datadir.R")
+source("datesdepths.R")
+source("co_var.R")
 
 secchi_dates <- data.frame(date = as.Date(unique(secchi$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))

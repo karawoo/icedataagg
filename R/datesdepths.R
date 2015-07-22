@@ -3,9 +3,12 @@
 library('dplyr')
 library('lubridate')
 
-source("R/datadir.R")
+source("datadir.R")
 
-winter <- read.csv("data/iceonoff.csv", stringsAsFactors = FALSE)
+## Load freeze/thaw date data
+winter <- read.csv("../data/iceonoff.csv", stringsAsFactors = FALSE)
+
+## Load long term secchi data
 secchi <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/secchi_cleaned.csv"), stringsAsFactors = FALSE)
 secchi$date <- as.Date(secchi$date)
 

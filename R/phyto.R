@@ -2,9 +2,9 @@ library('dplyr')
 library('lubridate')
 library('reshape2')
 
-source("R/datadir.R")
-source("R/datesdepths.R")
-source("R/co_var.R")
+source("datadir.R")
+source("datesdepths.R")
+source("co_var.R")
 
 phyto <- read.csv(paste0(datadir, 
                   "Longterm_data/phyto/Baikal_Phyto_zeroesInc_2countRemoved_KeyUpdate_20120728.csv"), 

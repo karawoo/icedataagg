@@ -1,17 +1,20 @@
 # combine all aggregated baikal data
 
-source("R/co_var.R")
-source("R/lakemeta.R")
-source("R/stmeta.R")
-source("R/datesdepths.R")
-source("R/secchi.R")
-source("R/chla.R") 
-source("R/temp.R")
-source("R/zoo.R")
-source("R/phyto.R")
+## Individual scripts for various sources/types of data (see readme for more
+## detailed description of each)
 
-# colnames
-template <- read.csv("./data/IceEcologyDataTemplate_17Nov2014.csv", 
+source("co_var.R")
+source("lakemeta.R")
+source("stmeta.R")
+source("datesdepths.R")
+source("secchi.R")
+source("chla.R") 
+source("temp.R")
+source("zoo.R")
+source("phyto.R")
+
+## Load template column names
+template <- read.csv("../data/IceEcologyDataTemplate_20141119.csv", 
                      stringsAsFactors = FALSE)
 template_names <- template$fieldname
 

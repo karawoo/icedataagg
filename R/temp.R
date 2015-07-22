@@ -1,8 +1,8 @@
 library('lubridate')
 library('dplyr')
 
-source("R/datadir.R")
-source("R/datesdepths.R")
+source("datadir.R")
+source("datesdepths.R")
 
 temp <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/temp_cleaned.csv"), stringsAsFactors = FALSE)
 temp$date <- as.Date(temp$date, format = "%Y-%m-%d")
