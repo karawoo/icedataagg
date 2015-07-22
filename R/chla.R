@@ -1,3 +1,7 @@
+######################################
+####  Aggregate chlorophyll data  ####
+######################################
+
 library('lubridate')
 library('dplyr')
 
@@ -5,15 +9,16 @@ source("datadir.R")
 source("datesdepths.R")
 source("co_var.R")
 
+## Load data
 chla <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/chla_cleaned.csv"), stringsAsFactors = FALSE)
 chla$date <- as.Date(chla$date)
 names(chla) <- tolower(names(chla))
 
-# select correct dates 
+## select correct dates 
 chla_dates <- data.frame(date = as.Date(unique(chla$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
-# aggregate
+## subset data by date and depth
 chla_sml <- chla %>%
   do(na.omit(.)) %>%
   semi_join(chla_dates, by = "date") %>%
@@ -37,12 +42,15 @@ chla_sml <- chla %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
   filter(depth <= photic_zone)
 
+## Include sample info - number of dates and start/end date (to be used later
+## when calculating periodn and overall start/end date)
 sample_info_chla <- chla_sml %>%
   group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
 
+## aggregate data by season
 chla_agg <- chla_sml %>%
   group_by(year, season) %>%
   summarize(avechla = mean(chla, na.rm = TRUE), 

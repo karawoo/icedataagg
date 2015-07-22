@@ -1,4 +1,6 @@
-# Determine sampling date ranges and depths
+#####################################################
+####  Determine sampling date ranges and depths  ####
+#####################################################
 
 library('dplyr')
 library('lubridate')
@@ -12,12 +14,18 @@ winter <- read.csv("../data/iceonoff.csv", stringsAsFactors = FALSE)
 secchi <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/secchi_cleaned.csv"), stringsAsFactors = FALSE)
 secchi$date <- as.Date(secchi$date)
 
-####  Dates  ####
+###############################
+####  Winter sample dates  ####
+###############################
 
-###### Winter sample dates - use data from Magnuson et al
-# Benson, B. and J. Magnuson. 2000, updated 2012. Global Lake and River
-# Ice Phenology Database. [indicate subset used]. Boulder, Colorado USA:
-# National Snow and Ice Data Center. http://dx.doi.org/10.7265/N5W66HP8.
+## Use freeze/thaw data from Magnuson et al to determine iceon periods
+
+## Benson, B. and J. Magnuson. 2000, updated 2012. Global Lake and River
+## Ice Phenology Database. [indicate subset used]. Boulder, Colorado USA:
+## National Snow and Ice Data Center. http://dx.doi.org/10.7265/N5W66HP8.
+
+## Data portal: http://nsidc.org/data/lake_river_ice/freezethaw.html
+## Request data for Lake Baikal, name code NG1. 
 
 # paste dates together
 winter$iceon <- as.Date(paste(winter$iceon_year, 
@@ -34,12 +42,14 @@ winter$iceoff <- as.Date(paste(winter$iceoff_year,
 winter <- winter[, c("iceon", "iceoff", "iceon_year",
                                "iceoff_year")]
 
-# add dates for 2007 and 2008
-# for ice on: use first sample after the annual gap in sampling that indicates
-# the period of ice formation. just find this by looking at the data. this will
-# be a conservative estimate of ice-on, but since Magnuson et al. found that 
-# ice-on is getting later, we don't want to use average ice-on date.
-# for ice off: use average ice-off date (ice-off isn't changing).
+## Add dates for 2007 and 2008 (freeze/thaw data only goes to 2006).
+
+## for ice on: use first sample after the annual gap in sampling that indicates
+## the period of ice formation. just find this by looking at the data. this will
+## be a conservative estimate of ice-on, but since Magnuson et al. found that 
+## ice-on is getting later, we don't want to use average ice-on date.
+
+## for ice off: use average ice-off date (ice-off isn't changing).
 
 avgiceoff <- mean(as.numeric(format(winter$iceoff, "%j")))
 extrayears <- data.frame(iceon = c("2007-02-25", "2008-02-11"), 
@@ -52,11 +62,16 @@ winterdates <- rbind(winter, extrayears)
 
 winterints <- interval(winterdates$iceon, winterdates$iceoff, tz = "IRKT")
 
-###### Summer sample dates - use July, August, September
+###############################
+####  Summer sample dates  ####
+###############################
 
+## Use July, August, September (will be done in respective data-subsetting
+## files)
 
-
-###### Use secchi to calculate depth of photic zone
+#######################################
+####  Calculate photic zone depth  ####
+#######################################
 
 ## function to calculate photic zone depth
 ## See Hampton et al. 2014
@@ -69,12 +84,11 @@ pz <- function(secchi) {
   photic
 }
 
-
-# average secchi depth in summer months -- to be used for summer dates pre-1964
+## average secchi depth in summer months -- to be used for summer dates pre-1964
 summer_secchi <- mean(secchi[secchi$month %in% c(7, 8, 9), "secchi_depth"], 
                       na.rm = TRUE)
 
-# winter secchi
+## average winter secchi depth
 date_subset <- function(x, intervals) {
     any(x %within% intervals)
 }
@@ -84,16 +98,21 @@ winter_secchi <- secchi %>%
   summarize(winter = mean(secchi_depth))
 winter_secchi <- winter_secchi[1, 1]  
 
-# calculate photic zone for each dates  
+## calculate photic zone for each date
 secchi_photic <- secchi %>% mutate(photic_zone = pz(secchi_depth))
 
-# calculate ice duration
+##################################
+####  Calculate ice duration  ####
+##################################
+
+## calculate ice duration for each season
 ice_duration <- winter %>%
   rename(year = iceoff_year) %>%
   mutate(iceduration = iceoff - iceon) %>%
   select(-c(iceon_year, iceoff, iceon)) %>%
   group_by(year) %>%
   do(expand.grid(year = .$year, season = c("iceoff", "iceon"), 
-                 iceduration = .$iceduration)) %>%
-  mutate(iceduration = ifelse(season == "iceoff", 0, iceduration)) %>%
+                 iceduration = .$iceduration, stringsAsFactors = FALSE)) %>%
+  mutate(iceduration = ifelse(season == "iceoff", NA, iceduration)) %>%
   arrange(year, desc(season))
+

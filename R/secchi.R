@@ -1,3 +1,7 @@
+###############################
+####  Extract secchi data  ####
+###############################
+
 library('lubridate')
 library('dplyr')
 
@@ -5,9 +9,12 @@ source("datadir.R")
 source("datesdepths.R")
 source("co_var.R")
 
+## Keep data from iceon period or July, August, September
 secchi_dates <- data.frame(date = as.Date(unique(secchi$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
+## Data frame of average and CV of secchi depth by season. Also average photic
+## depth.
 secchi_agg <- secchi %>%
   do(na.omit(.)) %>%
   semi_join(secchi_dates, by = "date") %>%

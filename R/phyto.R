@@ -1,3 +1,7 @@
+########################################
+####  Aggregate phytoplankton data  ####
+########################################
+
 library('dplyr')
 library('lubridate')
 library('reshape2')
@@ -11,13 +15,13 @@ phyto <- read.csv(paste0(datadir,
                   stringsAsFactors = FALSE)
 names(phyto) <- tolower(names(phyto))
 
-# convert date to actual date
+## convert date to actual date
 phyto$date <- as.Date(phyto$date, format = "%m/%d/%Y")
 
-# start in 1974 due to the switch from formalin to Lugol's
+## start in 1974 due to the switch from formalin to Lugol's
 phyto_post <- filter(phyto, date >= "1974-01-01")
 
-# rename groups according to ice workshop template
+## rename groups according to ice workshop template
 rename_phyto <- function(x) {
   result <- x %>%
     gsub("Green", "chloro", .) %>% 
@@ -33,16 +37,16 @@ rename_phyto <- function(x) {
 dates_phyto <- data.frame(date = as.Date(unique(phyto_post$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
-# - convert counts * 1000 / liter to counts/liter;
-# - rename groups to match ice template;
-# - remove rows with NA in date;
-# - subset based on dates that are either during ice cover or during 
-# stratification;
-# - add "season" column; 
-# - merge with secchi data; 
-# - insert values when secchi is missing (see comments within the code); 
-# - calculate photic zone;
-# - subset observations within photic zone
+## - convert counts * 1000 / liter to counts/liter;
+## - rename groups to match ice template;
+## - remove rows with NA in date;
+## - subset based on dates that are either during ice cover or during 
+## stratification;
+## - add "season" column; 
+## - merge with secchi data; 
+## - insert values when secchi is missing (see comments within the code); 
+## - calculate photic zone;
+## - subset observations within photic zone
 
 phyto_sml <- phyto_post %>%
   mutate(count_l = density * 1000) %>%
@@ -70,8 +74,8 @@ phyto_sml <- phyto_post %>%
   ungroup() %>%
   filter(depth <= photic_zone)
 
-# calculate total individuals per liter in each sample, then average
-# individuals per liter in each season
+## calculate total individuals per liter in each sample, then average
+## individuals per liter in each season
 totphytocount <- phyto_sml %>%
   group_by(year, date, season, depth) %>%
   summarize(totphyto = sum(count_l)) %>%
@@ -80,7 +84,7 @@ totphytocount <- phyto_sml %>%
             maxphytocount = max(totphyto, na.rm = TRUE),
             cvphytocount = co_var(totphyto, na.rm = TRUE))
 
-# calculate percentages of different taxa
+## calculate percentages of different taxa
 phytoperc <- phyto_sml %>%
   group_by(year, season, group_new) %>%
   summarize(count_total = sum(count_l)) %>% 
@@ -96,14 +100,14 @@ phytoperc <- phyto_sml %>%
          propotherphyto = otherphyto / total) %>%
   select(-c(chloro, crypto, cyano, diat, dino, otherphyto, total))
 
-# calculate start and end dates and number of samples and depths
+## calculate start and end dates and number of dates
 sample_info_phyto <- phyto_sml %>%
   group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
 
-# combine all
+## combine all
 phyto_agg <- totphytocount %>%
   left_join(phytoperc, by = c("year", "season")) %>%
   left_join(sample_info_phyto, by = c("year", "season")) %>%

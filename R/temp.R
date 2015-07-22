@@ -1,17 +1,22 @@
+######################################
+####  Aggregate temperature data  ####
+######################################
+
 library('lubridate')
 library('dplyr')
 
 source("datadir.R")
 source("datesdepths.R")
 
+## Load data
 temp <- read.csv(paste0(datadir, "Longterm_data/temp_chl_secchi_wind/cleaned_data/temp_cleaned.csv"), stringsAsFactors = FALSE)
 temp$date <- as.Date(temp$date, format = "%Y-%m-%d")
 
-# select correct dates
+## select correct dates
 temp_dates <- data.frame(date = as.Date(unique(temp$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
-# aggregate
+## subset data by date and depth
 temp_sml <- temp %>%
   do(na.omit(.)) %>%
   semi_join(temp_dates, by = "date") %>%
@@ -36,12 +41,15 @@ temp_sml <- temp %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
   filter(depth <= photic_zone)
 
+## extract start/end dates and number of dates, to be used later when
+## calculating overall start/end and periodn
 sample_info_temp <- temp_sml %>%
   group_by(year, season) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
             maxdate = max(date))
 
+## aggregate data by season
 temp_agg <- temp_sml %>%
   group_by(year, season) %>%
   summarize(watertemp = mean(temp)) %>%

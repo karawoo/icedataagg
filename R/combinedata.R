@@ -1,4 +1,6 @@
-# combine all aggregated baikal data
+##############################################
+####  Combine all aggregated Baikal data  ####
+##############################################
 
 ## Individual scripts for various sources/types of data (see readme for more
 ## detailed description of each)
@@ -18,8 +20,10 @@ template <- read.csv("../data/IceEcologyDataTemplate_20141119.csv",
                      stringsAsFactors = FALSE)
 template_names <- template$fieldname
 
-# one master set of start/end dates, number of samples, and average number of
-# depths per sample. 
+## Create one master set of start/end dates from the individual start/end dates
+## present in the various aggregations. For each type of data I calculated the
+## start/end date; this take the earliest start and the latest end to get the
+## appropriate range for each season. Average the ndates columns to get periodn.
 sample_info_cols <- c("year", "season", "ndates", "mindate", "maxdate")
 
 sample_replicates <- rbind_list(
@@ -41,17 +45,17 @@ sample_replicates <- rbind_list(
          samplenarrat = "peiodn is the average of the number of sampling dates for different measurements.") %>%
   select(-c(start, end))
 
-# combine all the data!
+## combine all the data!
 alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
   lapply(function(x) subset(x, select = -c(ndates, mindate, maxdate))) %>%
   Reduce(function(x, y) merge(x, y, by = c("year", "season"), all = TRUE), .) %>%
   merge(sample_replicates, by = c("year", "season"), all = TRUE) %>%
   left_join(ice_duration[, c("year", "season", "iceduration")],
                          by = c("year", "season")) %>%
-  # add station and lake metadata:
+  ## add station and lake metadata:
   cbind(stmeta) %>%
   cbind(lakemeta) %>%
-    # add missing columns:
+  ## add missing columns:
   do(cbind(., data.frame(
     matrix(
       NA, 
@@ -61,20 +65,20 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
                                                 %in% names(.))])), 
     stringsAsFactors = FALSE)
   )) %>%
-  # fill in a few fields
+  ## fill in a few fields
   mutate(multiplestations = "no", sampletype = "in situ", 
          sidata = "no", fadata = "no", gutdata = "no", 
          icedepth = ifelse(season == "iceoff", 0, NA), 
          snowdepth = ifelse(season == "iceoff", 0, NA),
          researcher = "Kara.Woo") %>%
-  # reorder columns to match template
+  ## reorder columns to match template
   do(.[, template_names]) %>%
-  # arrange by year and season 
+  ## arrange by year and season 
   arrange(year, desc(season))
  
-#  
-#  write.csv(alldata, "./data/baikal_long_20141119.csv", row.names = FALSE)
-#  write.csv(t(alldata), "./data/baikal_agg_20141119.csv")
-# 
+## Export data (horizontal and vertical)
+## write.csv(alldata, "./data/baikal_long_20141119.csv", row.names = FALSE)
+## write.csv(t(alldata), "./data/baikal_agg_20141119.csv")
+
 
 

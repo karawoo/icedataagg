@@ -1,3 +1,7 @@
+################################
+####  Lake Baikal metadata  ####
+################################
+
 lakemeta <- data.frame(
     lakename = "Lake Baikal",
     lakeregloc = "Siberia",
@@ -11,7 +15,6 @@ lakemeta <- data.frame(
     lakefetch = 636,
     stringsAsFactors = FALSE
 )
-
 
 ### Resources
 
