@@ -459,19 +459,7 @@ zoo_agg <- totzoopcount %>%
 ## start in 1974 due to the switch from formalin to Lugol's
 phyto_post <- filter(phyto, date >= "1974-01-01")
 
-## rename groups according to ice workshop template
-rename_phyto <- function(x) {
-  result <- x %>%
-    gsub("Green", "chloro", .) %>% 
-    gsub("Diatom", "diat", .) %>%
-    tolower(.)
-  
-  result <- ifelse(!result %in% c("chloro", "crypto", "cyano", "diat", "dino"), 
-           "otherphyto", result)
-  result
-}
-
-# dates to use
+## dates to use
 dates_phyto <- data.frame(date = as.Date(unique(phyto_post$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
@@ -615,13 +603,13 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
  
 ## Export data (horizontal and vertical)
 
-## exportdate <- Sys.Date()
-## write.csv(alldata,
-##           paste0("../data/baikal_long_", exportdate, ".csv"),
-##           row.names = FALSE)
-## write.csv(t(alldata),
-##           paste0("../data/baikal_agg_", exportdate, ".csv"),
-##           row.names = FALSE)
+exportdate <- Sys.Date()
+write.csv(alldata,
+          paste0("../data/baikal_long_", exportdate, ".csv"),
+          row.names = FALSE)
+write.csv(t(alldata),
+          paste0("../data/baikal_agg_", exportdate, ".csv"),
+          row.names = FALSE)
 
 
 
