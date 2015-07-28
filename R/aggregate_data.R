@@ -19,7 +19,7 @@
 ## repository that contains the data, they should set the directory location of
 ## the repository to datadir below.
 
-datadir <- "~/projects/baikal_svn"
+datadir <- "~/projects/baikal_svn/"
 
 ## Load the required packages:
 library('dplyr')
