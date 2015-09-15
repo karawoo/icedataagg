@@ -382,7 +382,8 @@ zoo_sml <- zoo %>%
                             "Various protist", "Cyst")) %>%
   mutate(group_new = rename_grp(group_fine)) %>%
   select(-group_general, -group_fine, -status) %>%
-  mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
+  mutate(year = as.integer(substring(date, 1, 4)),
+         date = as.Date(date)) %>%
   filter(!is.na(date)) %>%
   semi_join(dates_zoo, by = "date") %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "iceoff", "iceon")) %>%
