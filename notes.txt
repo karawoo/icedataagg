@@ -8,7 +8,7 @@ Ice Data Aggregation Notes -*- mode: org -*-
 - [ ] determine sampledepth
 
 * 2014-10-29
-- [ ] remove 1945 zoop data (species codes are all messed up)
+- [X] remove 1945 zoop data (species codes are all messed up)
 
 * 2014-10-28
 - [ ] put zeroes instead of NA for phyto/zoo taxa that are never observed

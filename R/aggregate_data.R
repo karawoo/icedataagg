@@ -451,7 +451,9 @@ sample_info_zoo <- zoo_sml %>%
 zoo_agg <- totzoopcount %>%
   left_join(zoopperc, by = c("year", "season")) %>%
   left_join(sample_info_zoo, by = c("year", "season")) %>%
-  arrange(year, desc(season))
+  arrange(year, desc(season)) %>%
+  ## remove 1945 as the data is too unreliable from this year
+  filter(year > 1945)
 
 ########################################
 ####  Aggregate phytoplankton data  ####
