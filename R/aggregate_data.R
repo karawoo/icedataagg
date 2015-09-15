@@ -348,7 +348,7 @@ temp_agg <- temp_sml %>%
 ######################################
 
 ## dates to use for ice-covered and stratified periods
-dates_to_use <- data.frame(date = as.Date(unique(zoo$date))) %>%
+dates_zoo <- data.frame(date = as.Date(unique(zoo$date))) %>%
   filter(sapply(date, date_subset, winterints) | month(date) %in% c(7, 8, 9))
 
 ## Aggregate ALL the data!
@@ -384,7 +384,7 @@ zoo_sml <- zoo %>%
   select(-group_general, -group_fine, -status) %>%
   mutate(year = as.integer(substring(date, 1, 4)), date = as.Date(date)) %>%
   filter(!is.na(date)) %>%
-  semi_join(dates_to_use, by = "date") %>%
+  semi_join(dates_zoo, by = "date") %>%
   mutate(season = ifelse(month(date) %in% c(7, 8, 9), "iceoff", "iceon")) %>%
   left_join(secchi[, c("date", "secchi_depth")], by = "date") %>%
   ## add missing secchi according to the following rules:
