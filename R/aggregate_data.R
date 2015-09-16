@@ -598,7 +598,7 @@ alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
          sidata = "no", fadata = "no", gutdata = "no", 
          icedepth = ifelse(season == "iceoff", 0, NA), 
          snowdepth = ifelse(season == "iceoff", 0, NA),
-         researcher = "Kara.Woo") %>%
+         researcher = "Stephanie.Hampton") %>%
   ## reorder columns to match template
   do(.[, template_names]) %>%
   ## arrange by year and season 
