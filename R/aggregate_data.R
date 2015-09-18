@@ -278,13 +278,17 @@ chla_sml <- chla %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
   filter(depth <= photic_zone)
 
-## Include sample info - number of dates and start/end date (to be used later
-## when calculating periodn and overall start/end date)
+## Include sample info - average sample depth, number of dates, and start/end
+## date (to be used later when calculating periodn and overall start/end date)
 sample_info_chla <- chla_sml %>%
-  group_by(year, season) %>%
+  group_by(year, season, date) %>%
+  ## Find the max sampling depth for each day
+  summarize(maxdepth = max(depth)) %>%
+  ## Then find number of dates, start/end, and average max depth for each season
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
-            maxdate = max(date))
+            maxdate = max(date),
+            depthmean = mean(maxdepth))
 
 ## aggregate data by season
 chla_agg <- chla_sml %>%
@@ -328,13 +332,17 @@ temp_sml <- temp %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
   filter(depth <= photic_zone)
 
-## extract start/end dates and number of dates, to be used later when
-## calculating overall start/end and periodn
+## extract sample depth, start/end dates, and number of dates, to be used later
+## when calculating overall start/end and periodn
 sample_info_temp <- temp_sml %>%
-  group_by(year, season) %>%
+  group_by(year, season, date) %>%
+  ## Find the max sampling depth for each day
+  summarize(maxdepth = max(depth)) %>%
+  ## Then find number of dates, start/end, and average max depth for each season
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
-            maxdate = max(date))
+            maxdate = max(date),
+            depthmean = mean(maxdepth))
 
 ## aggregate data by season
 temp_agg <- temp_sml %>%
@@ -442,10 +450,14 @@ zoopperc <- zoo_sml %>%
 
 ## calculate start and end dates and number of dates of sampling
 sample_info_zoo <- zoo_sml %>%
-  group_by(year, season) %>%
+  group_by(year, season, date) %>%
+  ## Find the max sampling depth for each day
+  summarize(maxdepth = max(nig_gr)) %>%
+  ## Then find number of dates, start/end, and average max depth for each season  
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
-            maxdate = max(date))
+            maxdate = max(date),
+            depthmean = mean(maxdepth))
 
 ## combine all
 zoo_agg <- totzoopcount %>%
@@ -531,10 +543,13 @@ phytoperc <- phyto_sml %>%
 
 ## calculate start and end dates and number of dates
 sample_info_phyto <- phyto_sml %>%
-  group_by(year, season) %>%
+  group_by(year, season, date) %>%
+  ## Find the max sampling depth for each day
+  summarize(maxdepth = max(depth)) %>%
   summarize(ndates = length(unique(date)), 
             mindate = min(date), 
-            maxdate = max(date))
+            maxdate = max(date),
+            depthmean = mean(maxdepth))
 
 ## combine all
 phyto_agg <- totphytocount %>%
@@ -551,11 +566,13 @@ phyto_agg <- totphytocount %>%
 ## Create one master set of start/end dates from the individual start/end dates
 ## present in the various aggregations. For each type of data I calculated the
 ## start/end date; this take the earliest start and the latest end to get the
-## appropriate range for each season. Average the ndates columns to get periodn.
-sample_info_cols <- c("year", "season", "ndates", "mindate", "maxdate")
+## appropriate range for each season. Average the ndates columns to get periodn,
+## and average the sampledepth columns to get average sample depth.
+sample_info_cols <- c("year", "season", "ndates", "mindate", "maxdate",
+                      "depthmean")
 
 sample_replicates <- rbind_list(
-  secchi_agg[, sample_info_cols], 
+  secchi_agg[, c("year", "season", "ndates", "mindate", "maxdate")], 
   chla_agg[, sample_info_cols], 
   temp_agg[, sample_info_cols], 
   zoo_agg[, sample_info_cols], 
@@ -563,7 +580,8 @@ sample_replicates <- rbind_list(
   group_by(year, season) %>%
   summarize(start = min(mindate), 
             end = max(maxdate), 
-            periodn = mean(ndates, na.rm = TRUE)) %>%
+            periodn = mean(ndates, na.rm = TRUE),
+            sampledepth = mean(depthmean, na.rm = TRUE)) %>%
   mutate(startday = day(start), 
          startmonth = month(start, label = TRUE, abbr = TRUE), 
          startyear = year(start), 
@@ -575,7 +593,8 @@ sample_replicates <- rbind_list(
 
 ## combine all the data!
 alldata <- list(secchi_agg, chla_agg, temp_agg, zoo_agg, phyto_agg) %>%
-  lapply(function(x) subset(x, select = -c(ndates, mindate, maxdate))) %>%
+  lapply(function(x) select(x, -one_of("ndates", "mindate",
+                                      "maxdate", "depthmean"))) %>%
   Reduce(function(x, y) merge(x, y, by = c("year", "season"), all = TRUE), .) %>%
   merge(sample_replicates, by = c("year", "season"), all = TRUE) %>%
   left_join(ice_duration[, c("year", "season", "iceduration")],
