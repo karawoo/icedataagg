@@ -335,7 +335,10 @@ temp_sml <- temp %>%
                                                      summer_secchi, 
                                                      secchi_depth))) %>%
   mutate(photic_zone = pz(secchi_depth)) %>%
-  filter(depth <= photic_zone)
+  filter(depth <= photic_zone) %>%
+  ## Remove one row in 1969 where temperature is 37659. I think we can safely
+  ## say any temperatures > 30,000 C are a mistake.
+  filter(temp < 30000)
 
 ## extract sample depth, start/end dates, and number of dates, to be used later
 ## when calculating overall start/end and periodn
