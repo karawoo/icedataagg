@@ -34,7 +34,9 @@ source("funs.R")
 ###### Benson, B. and J. Magnuson. 2000, updated 2012. Global Lake and River Ice
 ###### Phenology Database. Boulder, Colorado USA: National Snow and Ice Data
 ###### Center. http://dx.doi.org/10.7265/N5W66HP8.
-###### Data portal: http://nsidc.org/data/lake_river_ice/freezethaw.html
+######
+###### To recreate this data set visit the data portal:
+###### http://nsidc.org/data/lake_river_ice/freezethaw.html
 ###### Request data for Lake Baikal, name code NG1. Place in `data` folder.
 
 winter <- read.csv("../data/iceonoff.csv", stringsAsFactors = FALSE)
@@ -188,6 +190,9 @@ winterdates <- rbind(winter, extrayears)
 
 ## All winter intervals:
 winterints <- interval(winterdates$iceon, winterdates$iceoff, tz = "IRKT")
+
+## summmer (iceoff) dates:
+## we are using July, August, and September for the stratified period
 
 #########################################################################
 ####  Calculate photic zone depths and average summer/winter secchi  ####
